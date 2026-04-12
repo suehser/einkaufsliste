@@ -7,247 +7,124 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f7f4ef;
-    --surface: #ffffff;
-    --surface2: #f0ece4;
-    --ink: #1a1714;
-    --ink2: #6b6560;
-    --accent: #2d6a4f;
-    --accent-light: #d8f3dc;
-    --danger: #c0392b;
-    --gold: #c49a00;
-    --gold-light: #fdf3d0;
-    --border: #e0d9ce;
-    --radius: 16px;
-    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+    --bg:#f7f4ef; --surface:#fff; --surface2:#f0ece4; --ink:#1a1714; --ink2:#6b6560;
+    --accent:#2d6a4f; --accent-light:#d8f3dc; --danger:#c0392b;
+    --gold:#c49a00; --gold-light:#fdf3d0; --border:#e0d9ce;
+    --radius:16px; --shadow:0 2px 16px rgba(0,0,0,0.07);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    min-height: 100vh;
-    padding-bottom: 60px;
-  }
-  header {
-    background: var(--accent);
-    color: #fff;
-    padding: 20px 20px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(45,106,79,0.3);
-  }
-  header h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; letter-spacing: -0.5px; }
-  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
-  .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.73rem; opacity: 0.9; margin-top: 8px; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #52d68a; animation: pulse 2s infinite; }
-  .sync-dot.offline { background: #ff6b6b; animation: none; }
-  .sync-dot.syncing { background: #ffd93d; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-  .tabs {
-    display: flex;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-    position: sticky;
-    top: 90px;
-    z-index: 90;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    flex-shrink: 0;
-    padding: 11px 16px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.83rem;
-    font-weight: 500;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--ink2);
-    border-bottom: 2.5px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-light); }
-  main { max-width: 640px; margin: 0 auto; padding: 18px 14px; }
-  .add-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    margin-bottom: 18px;
-    border: 1px solid var(--border);
-  }
-  .add-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 12px; }
-  .form-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  input[type="text"], select {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    padding: 9px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    background: var(--bg);
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input[type="text"]:focus, select:focus { border-color: var(--accent); }
-  input.main-input { flex: 1; min-width: 150px; }
-  input.qty-input { width: 72px; }
-  select.cat-select, select.market-select { flex: 1; min-width: 120px; }
-  .deal-toggle {
-    display: flex; align-items: center; gap: 7px;
-    font-size: 0.83rem; color: var(--gold); font-weight: 600;
-    cursor: pointer; padding: 5px 0; margin-bottom: 4px;
-  }
-  .deal-toggle input { cursor: pointer; accent-color: var(--gold); width: 16px; height: 16px; }
-  .btn-add {
-    width: 100%; padding: 11px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 9px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 500;
-    cursor: pointer; transition: background 0.2s, transform 0.1s;
-  }
-  .btn-add:hover { background: #235c42; }
-  .btn-add:active { transform: scale(0.98); }
-  .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: flex-start; }
-  .filter-bar select { font-size: 0.78rem; padding: 6px 9px; }
-  .filter-bar label { font-size: 0.78rem; color: var(--ink2); font-weight: 500; margin-top: 7px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:60px}
+  header{background:var(--accent);color:#fff;padding:20px 20px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(45,106,79,.3)}
+  header h1{font-family:'Playfair Display',serif;font-size:1.6rem;letter-spacing:-.5px}
+  header p{font-size:.78rem;opacity:.75;margin-top:2px}
+  .sync-indicator{display:flex;align-items:center;gap:6px;font-size:.73rem;opacity:.9;margin-top:8px}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:#52d68a;animation:pulse 2s infinite}
+  .sync-dot.offline{background:#ff6b6b;animation:none}
+  .sync-dot.syncing{background:#ffd93d}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:90px;z-index:90}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab-btn{flex-shrink:0;padding:11px 16px;font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;border:none;background:none;cursor:pointer;color:var(--ink2);border-bottom:2.5px solid transparent;transition:all .2s;white-space:nowrap}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-light)}
+  main{max-width:640px;margin:0 auto;padding:18px 14px}
+  .add-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:18px;border:1px solid var(--border)}
+  .add-card h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:12px}
+  .form-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  input[type=text],input[type=date],select{font-family:'DM Sans',sans-serif;font-size:.88rem;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s}
+  input[type=text]:focus,input[type=date]:focus,select:focus{border-color:var(--accent)}
+  input.main-input{flex:1;min-width:150px}
+  input.qty-input{width:72px}
+  input.date-input{flex:1;min-width:130px}
+  select.cat-select,select.market-select{flex:1;min-width:120px}
+  .deal-toggle{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--gold);font-weight:600;cursor:pointer;padding:5px 0;margin-bottom:4px}
+  .deal-toggle input{cursor:pointer;accent-color:var(--gold);width:16px;height:16px}
+  .btn-add{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:500;cursor:pointer;transition:background .2s,transform .1s}
+  .btn-add:hover{background:#235c42}
+  .btn-add:active{transform:scale(.98)}
+
+  /* TOOLBAR (filter + sort) */
+  .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-start}
+  .toolbar select{font-size:.78rem;padding:6px 9px}
+  .toolbar label{font-size:.78rem;color:var(--ink2);font-weight:500;margin-top:7px}
+  .toolbar-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 
   /* Multi-select market filter */
-  .market-filter-wrap { position: relative; }
-  .market-filter-btn {
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
-    padding: 6px 10px; border: 1.5px solid var(--border);
-    border-radius: 9px; background: var(--bg); color: var(--ink);
-    cursor: pointer; transition: border-color 0.2s; white-space: nowrap;
-    min-width: 130px; justify-content: space-between;
-  }
-  .market-filter-btn:hover, .market-filter-btn.open { border-color: var(--accent); }
-  .market-filter-btn .arrow { font-size: 0.6rem; opacity: 0.6; transition: transform 0.2s; }
-  .market-filter-btn.open .arrow { transform: rotate(180deg); }
-  .market-filter-badge {
-    background: var(--accent); color: #fff;
-    border-radius: 10px; font-size: 0.68rem; font-weight: 700;
-    padding: 1px 6px; margin-left: 2px;
-  }
-  .market-dropdown {
-    display: none; position: absolute; top: calc(100% + 4px); left: 0;
-    background: var(--surface); border: 1.5px solid var(--border);
-    border-radius: 10px; box-shadow: var(--shadow);
-    z-index: 200; min-width: 180px; overflow: hidden;
-    animation: dropIn 0.15s ease;
-  }
-  @keyframes dropIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
-  .market-dropdown.open { display: block; }
-  .market-dropdown-item {
-    display: flex; align-items: center; gap: 9px;
-    padding: 9px 13px; cursor: pointer; font-size: 0.83rem;
-    transition: background 0.12s; user-select: none;
-  }
-  .market-dropdown-item:hover { background: var(--surface2); }
-  .market-dropdown-item input[type="checkbox"] {
-    accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer;
-  }
-  .market-dropdown-divider { height: 1px; background: var(--border); margin: 3px 0; }
-  .market-dropdown-all {
-    padding: 8px 13px; font-size: 0.75rem; font-weight: 600;
-    color: var(--accent); cursor: pointer; letter-spacing: 0.03em;
-    text-align: right; transition: background 0.12s;
-  }
-  .market-dropdown-all:hover { background: var(--accent-light); }
-  .section-label {
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em;
-    text-transform: uppercase; color: var(--ink2); margin: 16px 0 6px;
-  }
-  .item-card {
-    background: var(--surface);
-    border-radius: 11px;
-    padding: 12px 12px;
-    margin-bottom: 7px;
-    border: 1.5px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-    animation: slideIn 0.22s ease;
-    position: relative; overflow: hidden;
-  }
-  @keyframes slideIn { from{opacity:0;transform:translateY(-7px)} to{opacity:1;transform:translateY(0)} }
-  .item-card.deal { border-color: var(--gold); background: linear-gradient(135deg,#fff 75%,var(--gold-light)); }
-  .item-card.checked { opacity: 0.42; }
-  .item-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-1px); }
-  .deal-ribbon {
-    position: absolute; top: 0; right: 0;
-    background: var(--gold); color: #fff;
-    font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em;
-    padding: 3px 8px 3px 12px;
-    clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
-  }
-  .check-btn {
-    width: 25px; height: 25px; border-radius: 50%;
-    border: 2px solid var(--border); background: none;
-    cursor: pointer; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; color: transparent; font-size: 13px;
-  }
-  .item-card.checked .check-btn { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .item-info { flex: 1; min-width: 0; }
-  .item-name { font-size: 0.92rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .item-card.checked .item-name { text-decoration: line-through; }
-  .item-meta { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
-  .badge { font-size: 0.68rem; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
-  .badge-market { background: #e3f2fd; color: #1565c0; }
-  .badge-qty { background: var(--accent-light); color: var(--accent); }
-  .item-actions { display: flex; gap: 3px; }
-  .btn-icon {
-    background: none; border: none; cursor: pointer;
-    padding: 5px; border-radius: 7px; color: var(--ink2);
-    font-size: 0.95rem; transition: background 0.15s, color 0.15s;
-  }
-  .btn-icon:hover { background: var(--surface2); color: var(--danger); }
-  .empty { text-align: center; padding: 36px 20px; color: var(--ink2); }
-  .empty-icon { font-size: 2.3rem; margin-bottom: 8px; }
-  .empty p { font-size: 0.88rem; }
-  .settings-card {
-    background: var(--surface); border-radius: var(--radius);
-    padding: 16px; box-shadow: var(--shadow);
-    border: 1px solid var(--border); margin-bottom: 14px;
-  }
-  .settings-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 12px; }
-  .tag-list { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
-  .tag {
-    display: flex; align-items: center; gap: 4px;
-    background: var(--surface2); border-radius: 20px;
-    padding: 4px 11px; font-size: 0.8rem; font-weight: 500;
-  }
-  .tag .del-tag { cursor: pointer; color: var(--ink2); font-size: 0.85rem; line-height: 1; transition: color 0.15s; }
-  .tag .del-tag:hover { color: var(--danger); }
-  .add-tag-row { display: flex; gap: 8px; }
-  .btn-sm {
-    padding: 7px 14px; border-radius: 8px; border: none;
-    font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 500;
-    cursor: pointer; background: var(--accent); color: #fff;
-    transition: background 0.2s; white-space: nowrap;
-  }
-  .btn-sm:hover { background: #235c42; }
-  .summary-bar {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 9px; padding: 9px 13px; margin-bottom: 14px;
-    display: flex; gap: 14px; font-size: 0.78rem; color: var(--ink2); flex-wrap: wrap;
-  }
-  .summary-bar span strong { color: var(--ink); }
-  .deal-section-header {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.68rem; font-weight: 800; letter-spacing: 0.09em;
-    text-transform: uppercase; color: var(--gold); margin: 16px 0 6px;
-  }
-  .loading {
-    text-align: center; padding: 40px 20px; color: var(--ink2);
-    font-size: 0.9rem;
-  }
-  @media (max-width: 380px) { .form-row { flex-direction: column; } input.qty-input { width: 100%; } }
+  .market-filter-wrap{position:relative}
+  .market-filter-btn{display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:.78rem;padding:6px 10px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--ink);cursor:pointer;transition:border-color .2s;white-space:nowrap;min-width:130px;justify-content:space-between}
+  .market-filter-btn:hover,.market-filter-btn.open{border-color:var(--accent)}
+  .market-filter-btn .arrow{font-size:.6rem;opacity:.6;transition:transform .2s}
+  .market-filter-btn.open .arrow{transform:rotate(180deg)}
+  .market-filter-badge{background:var(--accent);color:#fff;border-radius:10px;font-size:.68rem;font-weight:700;padding:1px 6px;margin-left:2px}
+  .market-dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow);z-index:200;min-width:180px;overflow:hidden;animation:dropIn .15s ease}
+  @keyframes dropIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .market-dropdown.open{display:block}
+  .market-dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 13px;cursor:pointer;font-size:.83rem;transition:background .12s;user-select:none}
+  .market-dropdown-item:hover{background:var(--surface2)}
+  .market-dropdown-item input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+  .market-dropdown-divider{height:1px;background:var(--border);margin:3px 0}
+  .market-dropdown-all{padding:8px 13px;font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;text-align:right;transition:background .12s}
+  .market-dropdown-all:hover{background:var(--accent-light)}
+
+    /* Sort control */
+  .sort-wrap{display:flex;align-items:center;gap:5px}
+  .sort-wrap label{font-size:.75rem;color:var(--ink2);white-space:nowrap}
+  .sort-wrap select{font-size:.75rem;padding:5px 8px}
+
+  /* Item cards */
+  .section-label{font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);margin:16px 0 6px}
+  .item-card{background:var(--surface);border-radius:11px;padding:12px;margin-bottom:7px;border:1.5px solid var(--border);display:flex;align-items:flex-start;gap:10px;transition:transform .15s,box-shadow .15s,opacity .2s;animation:slideIn .22s ease;position:relative;overflow:hidden}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+  .item-card.deal{border-color:var(--gold);background:linear-gradient(135deg,#fff 75%,var(--gold-light))}
+  .item-card.checked{opacity:.42}
+  .item-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+  .deal-ribbon{position:absolute;top:0;right:0;background:var(--gold);color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.06em;padding:3px 8px 3px 12px;clip-path:polygon(12% 0,100% 0,100% 100%,0 100%)}
+  .check-btn{width:25px;height:25px;border-radius:50%;border:2px solid var(--border);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:transparent;font-size:13px;margin-top:2px}
+  .item-card.checked .check-btn{background:var(--accent);border-color:var(--accent);color:#fff}
+  .item-info{flex:1;min-width:0}
+  .item-name{font-size:.92rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item-card.checked .item-name{text-decoration:line-through}
+  .item-meta{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;align-items:center}
+  .badge{font-size:.68rem;padding:2px 7px;border-radius:20px;font-weight:500}
+  .badge-market{background:#e3f2fd;color:#1565c0}
+  .badge-qty{background:var(--accent-light);color:var(--accent)}
+  .badge-date{background:#fff3e0;color:#e65100;display:flex;align-items:center;gap:3px}
+  .item-actions{display:flex;gap:3px;flex-shrink:0}
+  .btn-icon{background:none;border:none;cursor:pointer;padding:5px;border-radius:7px;color:var(--ink2);font-size:.95rem;transition:background .15s,color .15s}
+  .btn-icon:hover{background:var(--surface2)}
+  .btn-icon.edit:hover{color:var(--accent)}
+  .btn-icon.del:hover{color:var(--danger)}
+
+  /* Edit modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:center;justify-content:center;padding:16px}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.2);animation:modalIn .2s ease}
+  @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+  .modal h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:14px}
+  .modal .form-row{margin-bottom:8px}
+  .modal input[type=text],.modal input[type=date],.modal select{width:100%}
+  .modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+  .btn-cancel{padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:none;font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;color:var(--ink2);transition:background .15s}
+  .btn-cancel:hover{background:var(--surface2)}
+  .btn-save{padding:8px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;transition:background .2s}
+  .btn-save:hover{background:#235c42}
+
+  .empty{text-align:center;padding:36px 20px;color:var(--ink2)}
+  .empty-icon{font-size:2.3rem;margin-bottom:8px}
+  .empty p{font-size:.88rem}
+  .settings-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px}
+  .settings-card h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:12px}
+  .tag-list{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+  .tag{display:flex;align-items:center;gap:4px;background:var(--surface2);border-radius:20px;padding:4px 11px;font-size:.8rem;font-weight:500}
+  .tag .del-tag{cursor:pointer;color:var(--ink2);font-size:.85rem;line-height:1;transition:color .15s}
+  .tag .del-tag:hover{color:var(--danger)}
+  .add-tag-row{display:flex;gap:8px}
+  .btn-sm{padding:7px 14px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;background:var(--accent);color:#fff;transition:background .2s;white-space:nowrap}
+  .btn-sm:hover{background:#235c42}
+  .summary-bar{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 13px;margin-bottom:14px;display:flex;gap:14px;font-size:.78rem;color:var(--ink2);flex-wrap:wrap}
+  .summary-bar span strong{color:var(--ink)}
+  .deal-section-header{display:flex;align-items:center;gap:6px;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px}
+  .loading{text-align:center;padding:40px 20px;color:var(--ink2);font-size:.9rem}
+  @media(max-width:380px){.form-row{flex-direction:column}input.qty-input{width:100%}}
 </style>
 </head>
 <body>
@@ -281,30 +158,56 @@
         <select class="cat-select" id="itemCat"></select>
         <select class="market-select" id="itemMarket"><option value="">Kein Markt</option></select>
       </div>
+      <div class="form-row">
+        <input type="date" class="date-input" id="itemDate" title="Gültig ab (optional)">
+        <label style="font-size:.78rem;color:var(--ink2);align-self:center;flex-shrink:0">Gültig ab (optional)</label>
+      </div>
       <label class="deal-toggle">
         <input type="checkbox" id="itemDeal"> Als Angebot markieren 🏷️
       </label>
       <button class="btn-add" onclick="addItem()">+ Hinzufügen</button>
     </div>
-    <div class="filter-bar">
-      <label>Filter:</label>
-      <select id="filterCat" onchange="render()"><option value="">Alle Kategorien</option></select>
-      <div class="market-filter-wrap" id="marketFilterWrap">
-        <button class="market-filter-btn" id="marketFilterBtn" onclick="toggleMarketDropdown()">
-          <span id="marketFilterLabel">Alle Märkte</span>
-          <span class="arrow">&#9660;</span>
-        </button>
-        <div class="market-dropdown" id="marketDropdown">
-          <div class="market-dropdown-item" onclick="toggleMarketFilter('__none__')">
-            <input type="checkbox" id="chk-none" onclick="event.stopPropagation();toggleMarketFilter('__none__')"> Kein Markt
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <label>Filter:</label>
+        <select id="filterCat" onchange="render()"><option value="">Alle Kategorien</option></select>
+        <div class="market-filter-wrap" id="marketFilterWrap">
+          <button class="market-filter-btn" id="marketFilterBtn" onclick="toggleMarketDropdown()">
+            <span id="marketFilterLabel">Alle Märkte</span>
+            <span class="arrow">&#9660;</span>
+          </button>
+          <div class="market-dropdown" id="marketDropdown">
+            <div class="market-dropdown-item" onclick="toggleMarketFilter('__none__')">
+              <input type="checkbox" id="chk-none" onclick="event.stopPropagation();toggleMarketFilter('__none__')"> Kein Markt
+            </div>
+            <div class="market-dropdown-divider"></div>
+            <div id="marketCheckboxList"></div>
+            <div class="market-dropdown-divider"></div>
+            <div class="market-dropdown-all" onclick="clearMarketFilter()">Alle anzeigen</div>
           </div>
-          <div class="market-dropdown-divider"></div>
-          <div id="marketCheckboxList"></div>
-          <div class="market-dropdown-divider"></div>
-          <div class="market-dropdown-all" onclick="clearMarketFilter()">Alle anzeigen</div>
         </div>
       </div>
+      <div class="sort-wrap">
+        <label>Datum:</label>
+        <select id="filterDate" onchange="render()">
+          <option value="">Alle</option>
+          <option value="__none__">Ohne Datum</option>
+        </select>
+      </div>
+      <div class="sort-wrap">
+        <label>Sortierung:</label>
+        <select id="sortMode" onchange="render()">
+          <option value="date">Neueste zuerst</option>
+          <option value="cat">Nach Kategorie</option>
+          <option value="market">Nach Markt</option>
+          <option value="az">A – Z</option>
+          <option value="validDate">Nach Datum</option>
+        </select>
+      </div>
     </div>
+
     <div id="summary-bar" class="summary-bar" style="display:none"></div>
     <div id="list-container"><div class="loading">⏳ Lade Daten…</div></div>
   </div>
@@ -344,353 +247,345 @@
       <h3>🗑️ Liste verwalten</h3>
       <div style="display:flex;gap:9px;flex-wrap:wrap">
         <button class="btn-sm" style="background:var(--danger)" onclick="if(confirm('Gesamte Liste löschen?'))clearAll()">Liste leeren</button>
+        <button class="btn-sm" style="background:#5c7a6e" onclick="exportData()">📤 Exportieren</button>
+        <button class="btn-sm" style="background:#5c7a6e" onclick="importData()">📥 Importieren</button>
       </div>
+      <p style="font-size:.75rem;color:var(--ink2);margin-top:10px">Export/Import sichert alle Produkte, Kategorien und Märkte als JSON-Datei — ideal für App-Updates.</p>
     </div>
   </div>
 </main>
 
-<!-- Firebase SDK -->
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ Produkt bearbeiten</h3>
+    <div class="form-row">
+      <input type="text" id="editName" placeholder="Produktname" style="flex:1">
+      <input type="text" id="editQty" placeholder="Menge" style="width:72px">
+    </div>
+    <div class="form-row">
+      <select id="editCat" style="flex:1"></select>
+      <select id="editMarket" style="flex:1"></select>
+    </div>
+    <div class="form-row">
+      <input type="date" id="editDate" style="flex:1">
+      <label style="font-size:.78rem;color:var(--ink2);align-self:center;flex-shrink:0">Gültig ab</label>
+    </div>
+    <label class="deal-toggle">
+      <input type="checkbox" id="editDeal"> Als Angebot markieren 🏷️
+    </label>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-save" onclick="saveEdit()">Speichern</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, onValue, set, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// ─── Firebase Config ───────────────────────────────────────────
-const app = initializeApp({
-  databaseURL: 'https://einkaufsliste-die-suehsen-default-rtdb.europe-west1.firebasedatabase.app'
-});
+const app = initializeApp({ databaseURL:'https://einkaufsliste-die-suehsen-default-rtdb.europe-west1.firebasedatabase.app' });
 const db = getDatabase(app);
+const itemsRef   = ref(db,'items');
+const catsRef    = ref(db,'categories');
+const marketsRef = ref(db,'markets');
 
-// ─── Refs ──────────────────────────────────────────────────────
-const itemsRef   = ref(db, 'items');
-const catsRef    = ref(db, 'categories');
-const marketsRef = ref(db, 'markets');
-
-// ─── Local state ───────────────────────────────────────────────
-let items      = {};   // { firebaseKey: itemObj }
-let categories = [];
-let markets    = [];
-let currentTab = 'liste';
+let items={}, categories=[], markets=[], currentTab='liste', editKey=null;
+let activeMarketFilters = new Set();
 
 const DEFAULT_CATS    = ['Obst & Gemüse','Milch & Käse','Fleisch','Backwaren','Getränke','Tiefkühl','Haushalt','Sonstiges'];
 const DEFAULT_MARKETS = ['Aldi','Lidl','Rewe','Edeka','Penny'];
 
-// ─── Sync status ───────────────────────────────────────────────
-function setSync(state) {
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncStatus');
-  if (state === 'online')  { dot.className='sync-dot'; txt.textContent='Echtzeit-Sync aktiv · Firebase'; }
-  if (state === 'offline') { dot.className='sync-dot offline'; txt.textContent='Keine Verbindung'; }
-  if (state === 'syncing') { dot.className='sync-dot syncing'; txt.textContent='Synchronisiere…'; }
+// ── Sync indicator ──────────────────────────────────────────────
+function setSync(s){
+  const dot=document.getElementById('syncDot'), txt=document.getElementById('syncStatus');
+  if(s==='online'){dot.className='sync-dot';txt.textContent='Echtzeit-Sync aktiv · Firebase';}
+  if(s==='offline'){dot.className='sync-dot offline';txt.textContent='Keine Verbindung';}
+  if(s==='syncing'){dot.className='sync-dot syncing';txt.textContent='Synchronisiere…';}
 }
 
-// ─── Realtime listeners ────────────────────────────────────────
-onValue(itemsRef, snap => {
-  items = snap.val() || {};
+// ── Firebase listeners ──────────────────────────────────────────
+onValue(itemsRef,snap=>{
+  items=snap.val()||{};
   setSync('online');
+  rebuildDateFilter();
   render();
-  if (currentTab === 'angebote') renderDeals();
-  if (currentTab === 'erledigt') renderChecked();
-}, () => setSync('offline'));
+  if(currentTab==='angebote')renderDeals();
+  if(currentTab==='erledigt')renderChecked();
+},()=>setSync('offline'));
 
-onValue(catsRef, snap => {
-  categories = snap.val() || DEFAULT_CATS;
-  if (!snap.val()) set(catsRef, DEFAULT_CATS);
-  populateSelects();
-  renderSettings();
+onValue(catsRef,snap=>{
+  categories=snap.val()||DEFAULT_CATS;
+  if(!snap.val())set(catsRef,DEFAULT_CATS);
+  populateSelects(); renderSettings();
+});
+onValue(marketsRef,snap=>{
+  markets=snap.val()||DEFAULT_MARKETS;
+  if(!snap.val())set(marketsRef,DEFAULT_MARKETS);
+  populateSelects(); renderSettings();
 });
 
-onValue(marketsRef, snap => {
-  markets = snap.val() || DEFAULT_MARKETS;
-  if (!snap.val()) set(marketsRef, DEFAULT_MARKETS);
-  populateSelects();
-  renderSettings();
-});
-
-// ─── Market multi-filter state ────────────────────────────────
-let activeMarketFilters = new Set(); // empty = show all
-
-window.rebuildMarketCheckboxes = function() {
-  const list = document.getElementById('marketCheckboxList');
-  if (!list) return;
-  list.innerHTML = markets.map(m => `
-    <div class="market-dropdown-item" onclick="toggleMarketFilter('${m}')">
-      <input type="checkbox" id="chk-${m}" ${activeMarketFilters.has(m)?'checked':''} onclick="event.stopPropagation();toggleMarketFilter('${m}')"> ${m}
-    </div>
-  `).join('');
-  // sync "none" checkbox
-  const noneChk = document.getElementById('chk-none');
-  if (noneChk) noneChk.checked = activeMarketFilters.has('__none__');
-  updateMarketFilterLabel();
-};
-
-window.toggleMarketFilter = function(val) {
-  if (activeMarketFilters.has(val)) {
-    activeMarketFilters.delete(val);
-  } else {
-    activeMarketFilters.add(val);
-  }
-  rebuildMarketCheckboxes();
-  render();
-};
-
-window.clearMarketFilter = function() {
-  activeMarketFilters.clear();
-  rebuildMarketCheckboxes();
-  render();
-  closeMarketDropdown();
-};
-
-function updateMarketFilterLabel() {
-  const label = document.getElementById('marketFilterLabel');
-  if (!label) return;
-  if (activeMarketFilters.size === 0) {
-    label.innerHTML = 'Alle Märkte';
-    document.getElementById('marketFilterBtn').querySelector('.arrow').insertAdjacentHTML('beforebegin', '');
-  } else {
-    const names = [...activeMarketFilters].map(v => v === '__none__' ? 'Kein Markt' : v);
-    label.innerHTML = names.length <= 2
-      ? names.join(', ')
-      : names.slice(0,2).join(', ') + ` <span class="market-filter-badge">+${names.length-2}</span>`;
-  }
-}
-
-window.toggleMarketDropdown = function() {
-  const btn = document.getElementById('marketFilterBtn');
-  const dd  = document.getElementById('marketDropdown');
-  const open = dd.classList.toggle('open');
-  btn.classList.toggle('open', open);
-};
-
-window.closeMarketDropdown = function() {
-  document.getElementById('marketDropdown').classList.remove('open');
-  document.getElementById('marketFilterBtn').classList.remove('open');
-};
-
-// Close dropdown on outside click
-document.addEventListener('click', e => {
-  const wrap = document.getElementById('marketFilterWrap');
-  if (wrap && !wrap.contains(e.target)) closeMarketDropdown();
-});
-
-// ─── Add item ──────────────────────────────────────────────────
-window.addItem = function() {
-  const name = document.getElementById('itemName').value.trim();
-  if (!name) { document.getElementById('itemName').focus(); return; }
-  setSync('syncing');
-  push(itemsRef, {
-    name,
-    qty:     document.getElementById('itemQty').value.trim(),
-    cat:     document.getElementById('itemCat').value,
-    market:  document.getElementById('itemMarket').value,
-    deal:    document.getElementById('itemDeal').checked,
-    checked: false,
-    addedAt: Date.now()
+// ── Date filter dropdown ────────────────────────────────────────
+window.rebuildDateFilter=function(){
+  const sel=document.getElementById('filterDate');
+  if(!sel)return;
+  const cur=sel.value;
+  // collect unique dates from non-checked items
+  const dates=[...new Set(Object.values(items).filter(i=>!i.checked&&i.validFrom).map(i=>i.validFrom))].sort();
+  sel.innerHTML='<option value="">Alle</option><option value="__none__">Ohne Datum</option>';
+  dates.forEach(d=>{
+    const o=document.createElement('option');
+    o.value=d;
+    // format dd.mm.yyyy
+    const[y,m,day]=d.split('-');
+    o.textContent=`${day}.${m}.${y}`;
+    if(d===cur)o.selected=true;
+    sel.appendChild(o);
   });
-  document.getElementById('itemName').value  = '';
-  document.getElementById('itemQty').value   = '';
-  document.getElementById('itemDeal').checked = false;
+  // restore selection if still valid
+  if(cur&&sel.querySelector(`option[value="${cur}"]`)) sel.value=cur;
+};
+
+// ── Add item ────────────────────────────────────────────────────
+window.addItem=function(){
+  const name=document.getElementById('itemName').value.trim();
+  if(!name){document.getElementById('itemName').focus();return;}
+  setSync('syncing');
+  push(itemsRef,{
+    name, qty:document.getElementById('itemQty').value.trim(),
+    cat:document.getElementById('itemCat').value,
+    market:document.getElementById('itemMarket').value,
+    validFrom:document.getElementById('itemDate').value,
+    deal:document.getElementById('itemDeal').checked,
+    checked:false, addedAt:Date.now()
+  });
+  document.getElementById('itemName').value='';
+  document.getElementById('itemQty').value='';
+  document.getElementById('itemDate').value='';
+  document.getElementById('itemDeal').checked=false;
   document.getElementById('itemName').focus();
 };
 
-// ─── Toggle check ──────────────────────────────────────────────
-window.toggleCheck = function(key) {
-  const item = items[key];
-  if (!item) return;
-  setSync('syncing');
-  update(ref(db, 'items/' + key), { checked: !item.checked });
-};
-
-// ─── Delete item ───────────────────────────────────────────────
-window.deleteItem = function(key) {
-  setSync('syncing');
-  remove(ref(db, 'items/' + key));
-};
-
-// ─── Clear checked ─────────────────────────────────────────────
-window.clearChecked = function() {
-  if (!confirm('Alle erledigten Produkte löschen?')) return;
-  setSync('syncing');
-  Object.entries(items).forEach(([k, v]) => { if (v.checked) remove(ref(db, 'items/' + k)); });
-};
-
-// ─── Clear all ─────────────────────────────────────────────────
-window.clearAll = function() {
-  setSync('syncing');
-  set(itemsRef, null);
-};
-
-// ─── Markets ───────────────────────────────────────────────────
-window.addMarket = function() {
-  const val = document.getElementById('newMarket').value.trim();
-  if (!val || markets.includes(val)) return;
-  set(marketsRef, [...markets, val]);
-  document.getElementById('newMarket').value = '';
-};
-
-window.deleteMarket = function(m) {
-  set(marketsRef, markets.filter(x => x !== m));
-};
-
-// ─── Categories ────────────────────────────────────────────────
-window.addCat = function() {
-  const val = document.getElementById('newCat').value.trim();
-  if (!val || categories.includes(val)) return;
-  set(catsRef, [...categories, val]);
-  document.getElementById('newCat').value = '';
-};
-
-window.deleteCat = function(c) {
-  set(catsRef, categories.filter(x => x !== c));
-};
-
-// ─── Selects ───────────────────────────────────────────────────
-window.populateSelects = function() {
-  ['itemCat','filterCat'].forEach(id => {
-    const el = document.getElementById(id);
-    const cur = el.value;
-    el.innerHTML = id === 'filterCat' ? '<option value="">Alle Kategorien</option>' : '';
-    categories.forEach(c => {
-      const o = document.createElement('option');
-      o.value = c; o.textContent = c;
-      if (c === cur) o.selected = true;
-      el.appendChild(o);
-    });
+// ── Edit modal ──────────────────────────────────────────────────
+window.openEdit=function(key){
+  const item=items[key]; if(!item)return;
+  editKey=key;
+  document.getElementById('editName').value=item.name||'';
+  document.getElementById('editQty').value=item.qty||'';
+  document.getElementById('editDate').value=item.validFrom||'';
+  document.getElementById('editDeal').checked=!!item.deal;
+  // populate cat/market selects in modal
+  ['editCat','editMarket'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(id==='editCat'){
+      el.innerHTML='';
+      categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===item.cat)o.selected=true;el.appendChild(o);});
+    } else {
+      el.innerHTML='<option value="">Kein Markt</option>';
+      markets.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===item.market)o.selected=true;el.appendChild(o);});
+    }
   });
-  // itemMarket select (add form only)
-  const mktEl = document.getElementById('itemMarket');
-  const mktCur = mktEl.value;
-  mktEl.innerHTML = '<option value="">Kein Markt</option>';
-  markets.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m; o.textContent = m;
-    if (m === mktCur) o.selected = true;
-    mktEl.appendChild(o);
+  document.getElementById('editModal').classList.add('open');
+};
+window.closeModal=function(){document.getElementById('editModal').classList.remove('open');editKey=null;};
+window.saveEdit=function(){
+  if(!editKey)return;
+  setSync('syncing');
+  update(ref(db,'items/'+editKey),{
+    name:document.getElementById('editName').value.trim(),
+    qty:document.getElementById('editQty').value.trim(),
+    cat:document.getElementById('editCat').value,
+    market:document.getElementById('editMarket').value,
+    validFrom:document.getElementById('editDate').value,
+    deal:document.getElementById('editDeal').checked
   });
-  // Rebuild market checkbox list in filter dropdown
+  closeModal();
+};
+// close on overlay click
+document.getElementById('editModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ── Toggle / delete / clear ─────────────────────────────────────
+window.toggleCheck=function(key){const item=items[key];if(!item)return;setSync('syncing');update(ref(db,'items/'+key),{checked:!item.checked});};
+window.deleteItem=function(key){setSync('syncing');remove(ref(db,'items/'+key));};
+window.clearChecked=function(){if(!confirm('Alle erledigten Produkte löschen?'))return;setSync('syncing');Object.entries(items).forEach(([k,v])=>{if(v.checked)remove(ref(db,'items/'+k));});};
+window.clearAll=function(){setSync('syncing');set(itemsRef,null);};
+
+// ── Markets / categories ────────────────────────────────────────
+window.addMarket=function(){const v=document.getElementById('newMarket').value.trim();if(!v||markets.includes(v))return;set(marketsRef,[...markets,v]);document.getElementById('newMarket').value='';};
+window.deleteMarket=function(m){set(marketsRef,markets.filter(x=>x!==m));};
+window.addCat=function(){const v=document.getElementById('newCat').value.trim();if(!v||categories.includes(v))return;set(catsRef,[...categories,v]);document.getElementById('newCat').value='';};
+window.deleteCat=function(c){set(catsRef,categories.filter(x=>x!==c));};
+
+// ── Selects ─────────────────────────────────────────────────────
+window.populateSelects=function(){
+  ['itemCat','filterCat'].forEach(id=>{
+    const el=document.getElementById(id); const cur=el.value;
+    el.innerHTML=id==='filterCat'?'<option value="">Alle Kategorien</option>':'';
+    categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===cur)o.selected=true;el.appendChild(o);});
+  });
+  const mEl=document.getElementById('itemMarket'); const mCur=mEl.value;
+  mEl.innerHTML='<option value="">Kein Markt</option>';
+  markets.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===mCur)o.selected=true;mEl.appendChild(o);});
   rebuildMarketCheckboxes();
 };
 
-// ─── Render helpers ────────────────────────────────────────────
-function renderCard([key, item]) {
+// ── Market multi-filter ─────────────────────────────────────────
+window.rebuildMarketCheckboxes=function(){
+  const list=document.getElementById('marketCheckboxList');if(!list)return;
+  list.innerHTML=markets.map(m=>`<div class="market-dropdown-item" onclick="toggleMarketFilter('${m}')"><input type="checkbox" id="chk-${m}" ${activeMarketFilters.has(m)?'checked':''} onclick="event.stopPropagation();toggleMarketFilter('${m}')"> ${m}</div>`).join('');
+  const nc=document.getElementById('chk-none');if(nc)nc.checked=activeMarketFilters.has('__none__');
+  updateMarketFilterLabel();
+};
+window.toggleMarketFilter=function(val){activeMarketFilters.has(val)?activeMarketFilters.delete(val):activeMarketFilters.add(val);rebuildMarketCheckboxes();render();};
+window.clearMarketFilter=function(){activeMarketFilters.clear();rebuildMarketCheckboxes();render();closeMarketDropdown();};
+function updateMarketFilterLabel(){
+  const label=document.getElementById('marketFilterLabel');if(!label)return;
+  if(activeMarketFilters.size===0){label.innerHTML='Alle Märkte';}
+  else{const names=[...activeMarketFilters].map(v=>v==='__none__'?'Kein Markt':v);label.innerHTML=names.length<=2?names.join(', '):names.slice(0,2).join(', ')+` <span class="market-filter-badge">+${names.length-2}</span>`;}
+}
+window.toggleMarketDropdown=function(){const btn=document.getElementById('marketFilterBtn'),dd=document.getElementById('marketDropdown');const open=dd.classList.toggle('open');btn.classList.toggle('open',open);};
+window.closeMarketDropdown=function(){document.getElementById('marketDropdown').classList.remove('open');document.getElementById('marketFilterBtn').classList.remove('open');};
+document.addEventListener('click',e=>{const wrap=document.getElementById('marketFilterWrap');if(wrap&&!wrap.contains(e.target))closeMarketDropdown();});
+
+// ── Helpers ─────────────────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+window.esc=esc;
+
+function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
+
+// ── Render card ─────────────────────────────────────────────────
+function renderCard([key,item]){
+  const dateB=item.validFrom?`<span class="badge badge-date">📅 ${fmtDate(item.validFrom)}</span>`:'';
   return `<div class="item-card${item.deal?' deal':''}${item.checked?' checked':''}">
-    ${item.deal?`<div class="deal-ribbon">ANGEBOT</div>`:''}
+    ${item.deal?'<div class="deal-ribbon">ANGEBOT</div>':''}
     <button class="check-btn" onclick="toggleCheck('${key}')">✓</button>
     <div class="item-info">
       <div class="item-name">${esc(item.name)}</div>
       <div class="item-meta">
         ${item.qty?`<span class="badge badge-qty">${esc(item.qty)}</span>`:''}
         ${item.market?`<span class="badge badge-market">🏪 ${esc(item.market)}</span>`:''}
+        ${dateB}
       </div>
     </div>
     <div class="item-actions">
-      <button class="btn-icon" onclick="deleteItem('${key}')">🗑️</button>
+      <button class="btn-icon edit" onclick="openEdit('${key}')" title="Bearbeiten">✏️</button>
+      <button class="btn-icon del" onclick="deleteItem('${key}')" title="Löschen">🗑️</button>
     </div>
   </div>`;
 }
 
-// ─── Render list ───────────────────────────────────────────────
-window.render = function() {
-  const catF = document.getElementById('filterCat').value;
-  let entries = Object.entries(items).filter(([,i]) => !i.checked);
-  if (catF) entries = entries.filter(([,i]) => i.cat === catF);
-  if (activeMarketFilters.size > 0) {
-    entries = entries.filter(([,i]) => {
-      const m = i.market || '';
-      return activeMarketFilters.has(m === '' ? '__none__' : m);
-    });
-  }
-
-  // Sort newest first
-  entries.sort((a,b) => (b[1].addedAt||0) - (a[1].addedAt||0));
-
-  const total = Object.values(items).filter(i=>!i.checked).length;
-  const deals = Object.values(items).filter(i=>i.deal&&!i.checked).length;
-  const done  = Object.values(items).filter(i=>i.checked).length;
-  const bar   = document.getElementById('summary-bar');
-  if (total > 0 || done > 0) {
-    bar.style.display = 'flex';
-    bar.innerHTML = `<span><strong>${total}</strong> offen</span><span><strong>${deals}</strong> Angebote</span><span><strong>${done}</strong> erledigt</span>`;
-  } else { bar.style.display = 'none'; }
-
-  const container = document.getElementById('list-container');
-  if (entries.length === 0) {
-    container.innerHTML = `<div class="empty"><div class="empty-icon">🛒</div><p>Keine Produkte.<br>Füge oben etwas hinzu!</p></div>`;
-    return;
-  }
-
-  const groups = {};
-  entries.forEach(entry => {
-    const key = entry[1].cat || 'Sonstiges';
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(entry);
+// ── Sort entries ────────────────────────────────────────────────
+function sortEntries(entries){
+  const mode=document.getElementById('sortMode').value;
+  return entries.slice().sort((a,b)=>{
+    const [,ai]=[...a], [,bi]=[...b];
+    if(mode==='cat')   return(ai.cat||'').localeCompare(bi.cat||'');
+    if(mode==='market')return(ai.market||'').localeCompare(bi.market||'');
+    if(mode==='az')    return(ai.name||'').localeCompare(bi.name||'');
+    if(mode==='validDate'){
+      const ad=ai.validFrom||'9999',bd=bi.validFrom||'9999';
+      return ad<bd?-1:ad>bd?1:0;
+    }
+    return(bi.addedAt||0)-(ai.addedAt||0); // date desc
   });
-
-  container.innerHTML = Object.entries(groups).map(([cat, arr]) =>
-    `<div class="section-label">${cat}</div>` + arr.map(renderCard).join('')
-  ).join('');
-};
-
-// ─── Render deals ──────────────────────────────────────────────
-window.renderDeals = function() {
-  const container = document.getElementById('deals-container');
-  const deals = Object.entries(items).filter(([,i]) => i.deal && !i.checked);
-  if (deals.length === 0) {
-    container.innerHTML = `<div class="empty"><div class="empty-icon">🏷️</div><p>Keine Angebote markiert.</p></div>`;
-    return;
-  }
-  const byMarket = {};
-  deals.forEach(entry => {
-    const key = entry[1].market || 'Kein Markt';
-    if (!byMarket[key]) byMarket[key] = [];
-    byMarket[key].push(entry);
-  });
-  container.innerHTML = Object.entries(byMarket).map(([m, arr]) =>
-    `<div class="deal-section-header">🏪 ${esc(m)}</div>` + arr.map(renderCard).join('')
-  ).join('');
-};
-
-// ─── Render checked ────────────────────────────────────────────
-window.renderChecked = function() {
-  const container = document.getElementById('checked-container');
-  const checked = Object.entries(items).filter(([,i]) => i.checked);
-  if (checked.length === 0) {
-    container.innerHTML = `<div class="empty"><div class="empty-icon">✅</div><p>Noch nichts erledigt.</p></div>`;
-    return;
-  }
-  container.innerHTML = checked.map(renderCard).join('');
-};
-
-// ─── Render settings ───────────────────────────────────────────
-window.renderSettings = function() {
-  const ml = document.getElementById('market-tag-list');
-  if (ml) ml.innerHTML = markets.map(m =>
-    `<div class="tag">🏪 ${esc(m)} <span class="del-tag" onclick="deleteMarket('${esc(m)}')">✕</span></div>`
-  ).join('');
-  const cl = document.getElementById('cat-tag-list');
-  if (cl) cl.innerHTML = categories.map(c =>
-    `<div class="tag">🗂️ ${esc(c)} <span class="del-tag" onclick="deleteCat('${esc(c)}')">✕</span></div>`
-  ).join('');
-};
-
-// ─── Tab switching ─────────────────────────────────────────────
-window.showTab = function(name) {
-  currentTab = name;
-  ['liste','angebote','erledigt','einstellungen'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t===name?'':'none';
-  });
-  document.querySelectorAll('.tab-btn').forEach((btn,i) => {
-    btn.classList.toggle('active', ['liste','angebote','erledigt','einstellungen'][i]===name);
-  });
-  if (name==='angebote') renderDeals();
-  if (name==='erledigt') renderChecked();
-  if (name==='einstellungen') renderSettings();
-};
-
-// ─── Helpers ───────────────────────────────────────────────────
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-window.esc = esc;
+
+// ── Render list ─────────────────────────────────────────────────
+window.render=function(){
+  const catF=document.getElementById('filterCat').value;
+  const dateF=document.getElementById('filterDate').value;
+  const sortMode=document.getElementById('sortMode').value;
+
+  let entries=Object.entries(items).filter(([,i])=>!i.checked);
+  if(catF) entries=entries.filter(([,i])=>i.cat===catF);
+  if(activeMarketFilters.size>0) entries=entries.filter(([,i])=>{const m=i.market||'';return activeMarketFilters.has(m===''?'__none__':m);});
+  if(dateF==='__none__') entries=entries.filter(([,i])=>!i.validFrom);
+  else if(dateF) entries=entries.filter(([,i])=>i.validFrom===dateF);
+
+  const total=Object.values(items).filter(i=>!i.checked).length;
+  const deals=Object.values(items).filter(i=>i.deal&&!i.checked).length;
+  const done =Object.values(items).filter(i=>i.checked).length;
+  const bar=document.getElementById('summary-bar');
+  if(total>0||done>0){bar.style.display='flex';bar.innerHTML=`<span><strong>${total}</strong> offen</span><span><strong>${deals}</strong> Angebote</span><span><strong>${done}</strong> erledigt</span>`;}
+  else bar.style.display='none';
+
+  const container=document.getElementById('list-container');
+  if(entries.length===0){container.innerHTML='<div class="empty"><div class="empty-icon">🛒</div><p>Keine Produkte.<br>Füge oben etwas hinzu!</p></div>';return;}
+
+  entries=sortEntries(entries);
+
+  // Group for cat/market sort, flat for others
+  if(sortMode==='cat'||sortMode==='market'){
+    const groupKey=sortMode==='cat'?'cat':'market';
+    const groups={};
+    entries.forEach(e=>{const k=e[1][groupKey]||'Sonstiges';if(!groups[k])groups[k]=[];groups[k].push(e);});
+    container.innerHTML=Object.entries(groups).map(([g,arr])=>`<div class="section-label">${g}</div>`+arr.map(renderCard).join('')).join('');
+  } else {
+    container.innerHTML=entries.map(renderCard).join('');
+  }
+};
+
+// ── Render deals ────────────────────────────────────────────────
+window.renderDeals=function(){
+  const container=document.getElementById('deals-container');
+  const deals=Object.entries(items).filter(([,i])=>i.deal&&!i.checked);
+  if(deals.length===0){container.innerHTML='<div class="empty"><div class="empty-icon">🏷️</div><p>Keine Angebote markiert.</p></div>';return;}
+  const byMarket={};
+  deals.forEach(e=>{const k=e[1].market||'Kein Markt';if(!byMarket[k])byMarket[k]=[];byMarket[k].push(e);});
+  container.innerHTML=Object.entries(byMarket).map(([m,arr])=>`<div class="deal-section-header">🏪 ${esc(m)}</div>`+arr.map(renderCard).join('')).join('');
+};
+
+// ── Render checked ───────────────────────────────────────────────
+window.renderChecked=function(){
+  const container=document.getElementById('checked-container');
+  const checked=Object.entries(items).filter(([,i])=>i.checked);
+  if(checked.length===0){container.innerHTML='<div class="empty"><div class="empty-icon">✅</div><p>Noch nichts erledigt.</p></div>';return;}
+  container.innerHTML=checked.map(renderCard).join('');
+};
+
+// ── Settings ─────────────────────────────────────────────────────
+window.renderSettings=function(){
+  const ml=document.getElementById('market-tag-list');
+  if(ml)ml.innerHTML=markets.map(m=>`<div class="tag">🏪 ${esc(m)} <span class="del-tag" onclick="deleteMarket('${esc(m)}')">✕</span></div>`).join('');
+  const cl=document.getElementById('cat-tag-list');
+  if(cl)cl.innerHTML=categories.map(c=>`<div class="tag">🗂️ ${esc(c)} <span class="del-tag" onclick="deleteCat('${esc(c)}')">✕</span></div>`).join('');
+};
+
+// ── Export / Import ───────────────────────────────────────────────
+window.exportData=function(){
+  const payload={version:2,exportedAt:new Date().toISOString(),items,categories,markets};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`einkaufsliste_${new Date().toISOString().slice(0,10)}.json`;a.click();
+};
+window.importData=function(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const p=JSON.parse(ev.target.result);
+        if(p.items) set(itemsRef,p.items);
+        if(p.categories) set(catsRef,p.categories);
+        if(p.markets) set(marketsRef,p.markets);
+        alert('Import erfolgreich! Daten werden synchronisiert.');
+      }catch{alert('Fehler beim Import – ungültige Datei.');}
+    };
+    reader.readAsText(e.target.files[0]);
+  };
+  input.click();
+};
+
+// ── Tab switching ─────────────────────────────────────────────────
+window.showTab=function(name){
+  currentTab=name;
+  ['liste','angebote','erledigt','einstellungen'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'':'none';});
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{btn.classList.toggle('active',['liste','angebote','erledigt','einstellungen'][i]===name);});
+  if(name==='angebote')renderDeals();
+  if(name==='erledigt')renderChecked();
+  if(name==='einstellungen')renderSettings();
+};
 </script>
 </body>
 </html>
