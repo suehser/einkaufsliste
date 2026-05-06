@@ -125,16 +125,45 @@
   .deal-section-header{display:flex;align-items:center;gap:6px;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px}
   .loading{text-align:center;padding:40px 20px;color:var(--ink2);font-size:.9rem}
   @media(max-width:380px){.form-row{flex-direction:column}input.qty-input{width:100%}}
+
+  /* LOGIN SCREEN */
+  #loginScreen{display:flex;position:fixed;inset:0;background:var(--accent);z-index:1000;align-items:center;justify-content:center;padding:24px}
+  .login-box{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+  .login-box h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ink);margin-bottom:4px}
+  .login-box p{font-size:.82rem;color:var(--ink2);margin-bottom:20px}
+  .login-box input{width:100%;margin-bottom:10px;padding:11px 14px;font-size:.9rem}
+  .btn-login{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;transition:background .2s}
+  .btn-login:hover{background:#235c42}
+  .login-error{color:var(--danger);font-size:.8rem;margin-top:8px;min-height:18px}
+  .btn-logout{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:.75rem;padding:4px 8px;border-radius:6px;transition:color .2s}
+  .btn-logout:hover{color:#fff}
 </style>
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" style="display:none">
+  <div class="login-box">
+    <h2>🛒 Einkaufsliste</h2>
+    <p>Bitte anmelden um fortzufahren</p>
+    <input type="email" id="loginEmail" placeholder="E-Mail" autocomplete="username">
+    <input type="password" id="loginPass" placeholder="Passwort" autocomplete="current-password">
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">Anmelden</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appContent" style="display:none">
 <header>
   <h1>🛒 Einkaufsliste</h1>
   <p>Gemeinsam einkaufen — überall synchron</p>
-  <div class="sync-indicator">
-    <div class="sync-dot" id="syncDot"></div>
-    <span id="syncStatus">Verbinde mit Firebase…</span>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+    <div class="sync-indicator" style="margin-top:0">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncStatus">Verbinde mit Firebase…</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Abmelden</button>
   </div>
 </header>
 
@@ -284,9 +313,11 @@
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, onValue, set, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const app = initializeApp({ databaseURL:'https://einkaufsliste-die-suehsen-default-rtdb.europe-west1.firebasedatabase.app' });
 const db = getDatabase(app);
+const auth = getAuth(app);
 const itemsRef   = ref(db,'items');
 const catsRef    = ref(db,'categories');
 const marketsRef = ref(db,'markets');
@@ -305,26 +336,58 @@ function setSync(s){
   if(s==='syncing'){dot.className='sync-dot syncing';txt.textContent='Synchronisiere…';}
 }
 
-// ── Firebase listeners ──────────────────────────────────────────
-onValue(itemsRef,snap=>{
-  items=snap.val()||{};
-  setSync('online');
-  rebuildDateFilter();
-  render();
-  if(currentTab==='angebote')renderDeals();
-  if(currentTab==='erledigt')renderChecked();
-},()=>setSync('offline'));
+// ── Auth state ──────────────────────────────────────────────────
+let unsubItems=null, unsubCats=null, unsubMarkets=null;
 
-onValue(catsRef,snap=>{
-  categories=snap.val()||DEFAULT_CATS;
-  if(!snap.val())set(catsRef,DEFAULT_CATS);
-  populateSelects(); renderSettings();
+onAuthStateChanged(auth, user => {
+  if(user){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('appContent').style.display='';
+    startListeners();
+  } else {
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('appContent').style.display='none';
+    if(unsubItems){unsubItems();unsubCats();unsubMarkets();}
+  }
 });
-onValue(marketsRef,snap=>{
-  markets=snap.val()||DEFAULT_MARKETS;
-  if(!snap.val())set(marketsRef,DEFAULT_MARKETS);
-  populateSelects(); renderSettings();
-});
+
+window.doLogin=function(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginError');
+  err.textContent='';
+  document.getElementById('loginBtn').textContent='…';
+  signInWithEmailAndPassword(auth,email,pass)
+    .catch(e=>{
+      err.textContent='Falsche E-Mail oder falsches Passwort.';
+      document.getElementById('loginBtn').textContent='Anmelden';
+    });
+};
+window.doLogout=function(){signOut(auth);};
+
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function startListeners(){
+  unsubItems=onValue(itemsRef,snap=>{
+    items=snap.val()||{};
+    setSync('online');
+    rebuildDateFilter();
+    render();
+    if(currentTab==='angebote')renderDeals();
+    if(currentTab==='erledigt')renderChecked();
+  },()=>setSync('offline'));
+
+  unsubCats=onValue(catsRef,snap=>{
+    categories=snap.val()||DEFAULT_CATS;
+    if(!snap.val())set(catsRef,DEFAULT_CATS);
+    populateSelects(); renderSettings();
+  });
+  unsubMarkets=onValue(marketsRef,snap=>{
+    markets=snap.val()||DEFAULT_MARKETS;
+    if(!snap.val())set(marketsRef,DEFAULT_MARKETS);
+    populateSelects(); renderSettings();
+  });
+}
 
 // ── Date filter dropdown ────────────────────────────────────────
 window.rebuildDateFilter=function(){
@@ -587,5 +650,6 @@ window.showTab=function(name){
   if(name==='einstellungen')renderSettings();
 };
 </script>
+</div><!-- /appContent -->
 </body>
 </html>
