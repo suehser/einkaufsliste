@@ -315,7 +315,15 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, onValue, set, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-const app = initializeApp({ databaseURL:'https://einkaufsliste-die-suehsen-default-rtdb.europe-west1.firebasedatabase.app' });
+const app = initializeApp({
+  apiKey: "AIzaSyCVVXXPsxB-QUGQhDqZnkFIyPiAORyFPyE",
+  authDomain: "einkaufsliste-die-suehsen.firebaseapp.com",
+  databaseURL: "https://einkaufsliste-die-suehsen-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "einkaufsliste-die-suehsen",
+  storageBucket: "einkaufsliste-die-suehsen.firebasestorage.app",
+  messagingSenderId: "872606696030",
+  appId: "1:872606696030:web:24673a3459ffc61d976acf"
+});
 const db = getDatabase(app);
 const auth = getAuth(app);
 const itemsRef   = ref(db,'items');
