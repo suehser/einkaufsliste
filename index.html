@@ -333,7 +333,7 @@ const marketsRef = ref(db,'markets');
 
 let items={}, categories=[], markets=[], currentTab='liste', editKey=null;
 let activeMarketFilters = new Set();
-let catMemory = {}, catMemLoaded = false;
+let catMemory = {}, catMemLoaded = false, inbox = {};
 const catMemRef = ref(db,'catMemory');
 
 const DEFAULT_CATS    = ['Obst & Gemüse','Milch & Käse','Fleisch','Backwaren','Getränke','Tiefkühl','Haushalt','Sonstiges'];
@@ -348,7 +348,7 @@ function setSync(s){
 }
 
 // ── Auth state ──────────────────────────────────────────────────
-let unsubItems=null, unsubCats=null, unsubMarkets=null, unsubCatMem=null;
+let unsubItems=null, unsubCats=null, unsubMarkets=null, unsubCatMem=null, unsubInbox=null;
 
 onAuthStateChanged(auth, user => {
   if(user){
@@ -358,7 +358,7 @@ onAuthStateChanged(auth, user => {
   } else {
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('appContent').style.display='none';
-    if(unsubItems){unsubItems();unsubCats();unsubMarkets();if(unsubCatMem)unsubCatMem();}
+    if(unsubItems){unsubItems();unsubCats();unsubMarkets();if(unsubCatMem)unsubCatMem();if(unsubInbox)unsubInbox();}
   }
 });
 
@@ -395,6 +395,7 @@ function startListeners(){
     populateSelects(); renderSettings(); processVoiceItems();
   });
   unsubCatMem=onValue(catMemRef,snap=>{catMemory=snap.val()||{};catMemLoaded=true;processVoiceItems();},()=>{catMemLoaded=true;processVoiceItems();});
+  unsubInbox=onValue(ref(db,'voiceInbox'),snap=>{inbox=snap.val()||{};processVoiceItems();},()=>{});
   unsubMarkets=onValue(marketsRef,snap=>{
     markets=snap.val()||DEFAULT_MARKETS;
     if(!snap.val())set(marketsRef,DEFAULT_MARKETS);
@@ -457,6 +458,22 @@ function parseVoice(raw){
 let processing=new Set();
 function processVoiceItems(){
   if(!categories.length||!markets.length||!catMemLoaded)return; // erst wenn Märkte/Kategorien geladen sind
+  // Siri-Eingang: voiceInbox/<schlüssel>/<id> = {text:"..."}
+  Object.entries(inbox).forEach(([sec,entries])=>{
+    if(!entries||typeof entries!=='object')return;
+    Object.entries(entries).forEach(([ek,e])=>{
+      const pk='inbox:'+ek;
+      if(processing.has(pk))return;
+      processing.add(pk);
+      const raw=(e&&typeof e==='object')?e.text:e;
+      const {parts,market}=parseVoice(raw||'');
+      const base=Date.now();
+      parts.forEach((name,i)=>{
+        set(ref(db,'items/v'+ek+(i?'_'+i:'')),{name,qty:'',cat:lookupCat(name),market,validFrom:'',deal:false,checked:false,voice:true,addedAt:base+i});
+      });
+      remove(ref(db,'voiceInbox/'+sec+'/'+ek));
+    });
+  });
   Object.entries(items).forEach(([key,item])=>{
     if(!item.needsParse||processing.has(key))return;
     processing.add(key);
