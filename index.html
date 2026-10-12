@@ -87,6 +87,7 @@
   .badge{font-size:.68rem;padding:2px 7px;border-radius:20px;font-weight:500}
   .badge-market{background:#e3f2fd;color:#1565c0}
   .badge-qty{background:var(--accent-light);color:var(--accent)}
+  .badge-voice{background:#f3e5f5;color:#7b1fa2}
   .badge-date{background:#fff3e0;color:#e65100;display:flex;align-items:center;gap:3px}
   .item-actions{display:flex;gap:3px;flex-shrink:0}
   .btn-icon{background:none;border:none;cursor:pointer;padding:5px;border-radius:7px;color:var(--ink2);font-size:.95rem;transition:background .15s,color .15s}
@@ -332,6 +333,8 @@ const marketsRef = ref(db,'markets');
 
 let items={}, categories=[], markets=[], currentTab='liste', editKey=null;
 let activeMarketFilters = new Set();
+let catMemory = {}, catMemLoaded = false;
+const catMemRef = ref(db,'catMemory');
 
 const DEFAULT_CATS    = ['Obst & Gemüse','Milch & Käse','Fleisch','Backwaren','Getränke','Tiefkühl','Haushalt','Sonstiges'];
 const DEFAULT_MARKETS = ['Aldi','Lidl','Rewe','Edeka','Penny'];
@@ -345,7 +348,7 @@ function setSync(s){
 }
 
 // ── Auth state ──────────────────────────────────────────────────
-let unsubItems=null, unsubCats=null, unsubMarkets=null;
+let unsubItems=null, unsubCats=null, unsubMarkets=null, unsubCatMem=null;
 
 onAuthStateChanged(auth, user => {
   if(user){
@@ -355,7 +358,7 @@ onAuthStateChanged(auth, user => {
   } else {
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('appContent').style.display='none';
-    if(unsubItems){unsubItems();unsubCats();unsubMarkets();}
+    if(unsubItems){unsubItems();unsubCats();unsubMarkets();if(unsubCatMem)unsubCatMem();}
   }
 });
 
@@ -379,6 +382,7 @@ function startListeners(){
   unsubItems=onValue(itemsRef,snap=>{
     items=snap.val()||{};
     setSync('online');
+    processVoiceItems();
     rebuildDateFilter();
     render();
     if(currentTab==='angebote')renderDeals();
@@ -388,12 +392,13 @@ function startListeners(){
   unsubCats=onValue(catsRef,snap=>{
     categories=snap.val()||DEFAULT_CATS;
     if(!snap.val())set(catsRef,DEFAULT_CATS);
-    populateSelects(); renderSettings();
+    populateSelects(); renderSettings(); processVoiceItems();
   });
+  unsubCatMem=onValue(catMemRef,snap=>{catMemory=snap.val()||{};catMemLoaded=true;processVoiceItems();},()=>{catMemLoaded=true;processVoiceItems();});
   unsubMarkets=onValue(marketsRef,snap=>{
     markets=snap.val()||DEFAULT_MARKETS;
     if(!snap.val())set(marketsRef,DEFAULT_MARKETS);
-    populateSelects(); renderSettings();
+    populateSelects(); renderSettings(); processVoiceItems();
   });
 }
 
@@ -418,11 +423,61 @@ window.rebuildDateFilter=function(){
   if(cur&&sel.querySelector(`option[value="${cur}"]`)) sel.value=cur;
 };
 
+// ── Kategorie-Gedächtnis ────────────────────────────────────────
+function memKey(name){return String(name||'').trim().toLowerCase().replace(/[.#$\[\]\/]/g,'_');}
+function rememberCat(name,cat){
+  if(!name||!cat)return;
+  update(catMemRef,{[memKey(name)]:cat}).catch(()=>{});
+}
+function lookupCat(name){
+  const k=memKey(name);
+  let cat=catMemory[k]||'';
+  if(!cat){ // Fallback: neuester Eintrag in der Liste mit gleichem Namen
+    let best=0;
+    Object.values(items).forEach(i=>{if(i.cat&&!i.voice&&memKey(i.name)===k&&(i.addedAt||0)>=best){best=i.addedAt||0;cat=i.cat;}});
+  }
+  return categories.includes(cat)?cat:'';
+}
+
+// ── Spracheinträge (Siri) verarbeiten ───────────────────────────
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function cap(s){s=s.trim();return s.charAt(0).toUpperCase()+s.slice(1);}
+function parseVoice(raw){
+  let text=String(raw||'').trim().replace(/[.!?]+$/,'');
+  let market='';
+  // Sprachzusatz: "... bei Lidl", "... vom Aldi", "... im Rewe" usw.
+  const sorted=[...markets].sort((a,b)=>b.length-a.length);
+  for(const m of sorted){
+    const re=new RegExp('\\s+(?:bei|beim|vom|von|im|in|aus|für)(?:\\s+(?:der|dem|den))?\\s+'+escRe(m)+'$','i');
+    if(re.test(text)){market=m;text=text.replace(re,'').trim();break;}
+  }
+  const parts=text.split(/\s*,\s*|\s+und\s+|\s+&\s+/i).map(s=>s.trim()).filter(Boolean).map(cap);
+  return {parts,market};
+}
+let processing=new Set();
+function processVoiceItems(){
+  if(!categories.length||!markets.length||!catMemLoaded)return; // erst wenn Märkte/Kategorien geladen sind
+  Object.entries(items).forEach(([key,item])=>{
+    if(!item.needsParse||processing.has(key))return;
+    processing.add(key);
+    const {parts,market}=parseVoice(item.raw||item.name);
+    if(!parts.length){remove(ref(db,'items/'+key));return;}
+    const base=item.addedAt||Date.now();
+    parts.forEach((name,i)=>{
+      const data={name,qty:'',cat:lookupCat(name),market,validFrom:'',deal:false,checked:false,voice:true,addedAt:base+i};
+      // Feste Schlüssel → doppelte Verarbeitung auf mehreren Geräten erzeugt keine Duplikate
+      if(i===0) set(ref(db,'items/'+key),data);
+      else set(ref(db,'items/'+key+'_'+i),data);
+    });
+  });
+}
+
 // ── Add item ────────────────────────────────────────────────────
 window.addItem=function(){
   const name=document.getElementById('itemName').value.trim();
   if(!name){document.getElementById('itemName').focus();return;}
   setSync('syncing');
+  rememberCat(name,document.getElementById('itemCat').value);
   push(itemsRef,{
     name, qty:document.getElementById('itemQty').value.trim(),
     cat:document.getElementById('itemCat').value,
@@ -450,7 +505,7 @@ window.openEdit=function(key){
   ['editCat','editMarket'].forEach(id=>{
     const el=document.getElementById(id);
     if(id==='editCat'){
-      el.innerHTML='';
+      el.innerHTML='<option value="">Ohne Kategorie</option>';
       categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===item.cat)o.selected=true;el.appendChild(o);});
     } else {
       el.innerHTML='<option value="">Kein Markt</option>';
@@ -463,7 +518,9 @@ window.closeModal=function(){document.getElementById('editModal').classList.remo
 window.saveEdit=function(){
   if(!editKey)return;
   setSync('syncing');
+  rememberCat(document.getElementById('editName').value,document.getElementById('editCat').value);
   update(ref(db,'items/'+editKey),{
+    voice:false,
     name:document.getElementById('editName').value.trim(),
     qty:document.getElementById('editQty').value.trim(),
     cat:document.getElementById('editCat').value,
@@ -492,7 +549,7 @@ window.deleteCat=function(c){set(catsRef,categories.filter(x=>x!==c));};
 window.populateSelects=function(){
   ['itemCat','filterCat'].forEach(id=>{
     const el=document.getElementById(id); const cur=el.value;
-    el.innerHTML=id==='filterCat'?'<option value="">Alle Kategorien</option>':'';
+    el.innerHTML=id==='filterCat'?'<option value="">Alle Kategorien</option><option value="__none__">Ohne Kategorie</option>':'';
     categories.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===cur)o.selected=true;el.appendChild(o);});
   });
   const mEl=document.getElementById('itemMarket'); const mCur=mEl.value;
@@ -534,6 +591,7 @@ function renderCard([key,item]){
     <div class="item-info">
       <div class="item-name">${esc(item.name)}</div>
       <div class="item-meta">
+        ${item.voice&&!item.cat?'<span class="badge badge-voice">🎤 Neu</span>':''}
         ${item.qty?`<span class="badge badge-qty">${esc(item.qty)}</span>`:''}
         ${item.market?`<span class="badge badge-market">🏪 ${esc(item.market)}</span>`:''}
         ${dateB}
@@ -569,7 +627,8 @@ window.render=function(){
   const sortMode=document.getElementById('sortMode').value;
 
   let entries=Object.entries(items).filter(([,i])=>!i.checked);
-  if(catF) entries=entries.filter(([,i])=>i.cat===catF);
+  if(catF==='__none__') entries=entries.filter(([,i])=>!i.cat);
+  else if(catF) entries=entries.filter(([,i])=>i.cat===catF);
   if(activeMarketFilters.size>0) entries=entries.filter(([,i])=>{const m=i.market||'';return activeMarketFilters.has(m===''?'__none__':m);});
   if(dateF==='__none__') entries=entries.filter(([,i])=>!i.validFrom);
   else if(dateF) entries=entries.filter(([,i])=>i.validFrom===dateF);
@@ -590,7 +649,7 @@ window.render=function(){
   if(sortMode==='cat'||sortMode==='market'){
     const groupKey=sortMode==='cat'?'cat':'market';
     const groups={};
-    entries.forEach(e=>{const k=e[1][groupKey]||'Sonstiges';if(!groups[k])groups[k]=[];groups[k].push(e);});
+    entries.forEach(e=>{const k=e[1][groupKey]||(groupKey==='cat'?'Ohne Kategorie':'Kein Markt');if(!groups[k])groups[k]=[];groups[k].push(e);});
     container.innerHTML=Object.entries(groups).map(([g,arr])=>`<div class="section-label">${g}</div>`+arr.map(renderCard).join('')).join('');
   } else {
     container.innerHTML=entries.map(renderCard).join('');
