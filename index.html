@@ -112,6 +112,16 @@
   .empty{text-align:center;padding:36px 20px;color:var(--ink2)}
   .empty-icon{font-size:2.3rem;margin-bottom:8px}
   .empty p{font-size:.88rem}
+  .prosp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .prosp-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s,border-color .15s;min-height:104px}
+  .prosp-card:active{transform:scale(.97)}
+  .prosp-card:hover{border-color:var(--accent)}
+  .prosp-logo{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:#fff}
+  .prosp-name{font-weight:600;font-size:.95rem}
+  .prosp-loc{font-size:.75rem;color:var(--ink2)}
+  .prosp-alt{font-size:.72rem;color:var(--accent);text-decoration:none;align-self:flex-start;margin-top:auto}
+  .prosp-wrap{display:flex;flex-direction:column}
+  .prosp-hint{font-size:.75rem;color:var(--ink2);margin-top:14px;line-height:1.4}
   .settings-card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px}
   .settings-card h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:12px}
   .tag-list{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -172,6 +182,7 @@
   <button class="tab-btn active" onclick="showTab('liste')">📋 Liste</button>
   <button class="tab-btn" onclick="showTab('angebote')">🏷️ Angebote</button>
   <button class="tab-btn" onclick="showTab('erledigt')">✅ Erledigt</button>
+  <button class="tab-btn" onclick="showTab('prospekte')">📰 Prospekte</button>
   <button class="tab-btn" onclick="showTab('einstellungen')">⚙️ Einstellungen</button>
 </div>
 
@@ -253,6 +264,12 @@
       <button class="btn-sm" style="background:var(--danger)" onclick="clearChecked()">Alle löschen</button>
     </div>
     <div id="checked-container"></div>
+  </div>
+
+  <!-- PROSPEKTE -->
+  <div id="tab-prospekte" style="display:none">
+    <div class="prosp-grid" id="prospGrid"></div>
+    <p class="prosp-hint">Öffnet jeweils den aktuellen Prospekt beim Anbieter – bei Kaufland, Edeka, Rewe und Penny direkt für eure Filiale. Aldi Süd, Lidl und Rossmann haben bundesweite bzw. regionale Prospekte ohne Filialauswahl. „kaufDA" ist der Prospekt über kaufDA als Alternative.</p>
   </div>
 
   <!-- EINSTELLUNGEN -->
@@ -727,12 +744,34 @@ window.importData=function(){
 // ── Tab switching ─────────────────────────────────────────────────
 window.showTab=function(name){
   currentTab=name;
-  ['liste','angebote','erledigt','einstellungen'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'':'none';});
-  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{btn.classList.toggle('active',['liste','angebote','erledigt','einstellungen'][i]===name);});
+  ['liste','angebote','erledigt','prospekte','einstellungen'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'':'none';});
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{btn.classList.toggle('active',['liste','angebote','erledigt','prospekte','einstellungen'][i]===name);});
   if(name==='angebote')renderDeals();
   if(name==='erledigt')renderChecked();
   if(name==='einstellungen')renderSettings();
+  if(name==='prospekte')renderProspekte();
 };
+// ── Prospekte ─────────────────────────────────────────────────────
+const PROSPEKTE=[
+  {name:'Kaufland',loc:'Schorndorf, Lutherstraße 75',color:'#e10915',url:'https://filiale.kaufland.de/service/filiale/schorndorf-2160.html'},
+  {name:'EDEKA',loc:'Plüderhausen, Jacob-Schüle-Str. 47',color:'#1a4fa0',url:'https://www.edeka.de/markt-id/10001890/prospekt.jsp',alt:'https://www.kaufda.de/Pluederhausen/EDEKA/p-r107'},
+  {name:'REWE',loc:'Lorch, Maierhofstraße 24',color:'#cc071e',url:'https://www.rewe.de/angebote/lorch/840890/rewe-markt-maierhofstrasse-24/',alt:'https://www.kaufda.de/Lorch-Wuertt/REWE/p-r101'},
+  {name:'ALDI SÜD',loc:'Prospekt der Woche',color:'#00005f',url:'https://www.aldi-sued.de/prospekte',alt:'https://www.kaufda.de/Schorndorf-Wuertt/ALDI-SUeD/p-r90'},
+  {name:'Lidl',loc:'Online-Prospekte',color:'#0050aa',url:'https://www.lidl.de/c/online-prospekte/s10005610',alt:'https://www.kaufda.de/Pluederhausen/Lidl/p-r74'},
+  {name:'Rossmann',loc:'Prospekt der Woche',color:'#c3002f',url:'https://www.rossmann.de/de/angebote/prospekte',alt:'https://www.kaufda.de/Pluederhausen/Rossmann/p-r98'},
+  {name:'PENNY',loc:'Plüderhausen, Obere Kirchgasse 1',color:'#cd1414',url:'https://www.penny.de/markt/pluederhausen/830513/penny-pluederhausen-mitte-obere-kirchgasse-1',alt:'https://www.kaufda.de/Pluederhausen/Penny-Markt/p-r75'}
+];
+function renderProspekte(){
+  const g=document.getElementById('prospGrid'); if(!g||g.childElementCount)return;
+  g.innerHTML=PROSPEKTE.map(p=>`<div class="prosp-wrap">
+    <a class="prosp-card" href="${p.url}" target="_blank" rel="noopener">
+      <div class="prosp-logo" style="background:${p.color}">${esc(p.name.charAt(0))}</div>
+      <div class="prosp-name">${esc(p.name)}</div>
+      <div class="prosp-loc">${esc(p.loc)}</div>
+      ${p.alt?`<span class="prosp-alt" onclick="event.preventDefault();event.stopPropagation();window.open('${p.alt}','_blank','noopener')">kaufDA ↗</span>`:''}
+    </a></div>`).join('');
+}
+
 </script>
 </div><!-- /appContent -->
 </body>
