@@ -754,21 +754,29 @@ window.showTab=function(name){
 // ── Prospekte ─────────────────────────────────────────────────────
 const PROSPEKTE=[
   {name:'Kaufland',loc:'Schorndorf, Lutherstraße 75',color:'#e10915',url:'https://filiale.kaufland.de/service/filiale/schorndorf-2160.html'},
-  {name:'EDEKA',loc:'Plüderhausen, Jacob-Schüle-Str. 47',color:'#1a4fa0',url:'https://www.edeka.de/markt-id/10001890/prospekt.jsp',alt:'https://www.kaufda.de/Pluederhausen/EDEKA/p-r107'},
+  {name:'EDEKA',loc:'Plüderhausen, Jacob-Schüle-Str. 47',color:'#1a4fa0',url:'https://www.edeka.de/maerkte/047197/prospekte/',alt:'https://www.kaufda.de/Pluederhausen/EDEKA/p-r107'},
   {name:'REWE',loc:'Lorch, Maierhofstraße 24',color:'#cc071e',url:'https://www.rewe.de/angebote/lorch/840890/rewe-markt-maierhofstrasse-24/',alt:'https://www.kaufda.de/Lorch-Wuertt/REWE/p-r101'},
   {name:'ALDI SÜD',loc:'Prospekt der Woche',color:'#00005f',url:'https://www.aldi-sued.de/prospekte',alt:'https://www.kaufda.de/Schorndorf-Wuertt/ALDI-SUeD/p-r90'},
   {name:'Lidl',loc:'Online-Prospekte',color:'#0050aa',url:'https://www.lidl.de/c/online-prospekte/s10005610',alt:'https://www.kaufda.de/Pluederhausen/Lidl/p-r74'},
   {name:'Rossmann',loc:'Prospekt der Woche',color:'#c3002f',url:'https://www.rossmann.de/de/angebote/prospekte',alt:'https://www.kaufda.de/Pluederhausen/Rossmann/p-r98'},
   {name:'PENNY',loc:'Plüderhausen, Obere Kirchgasse 1',color:'#cd1414',url:'https://www.penny.de/markt/pluederhausen/830513/penny-pluederhausen-mitte-obere-kirchgasse-1',alt:'https://www.kaufda.de/Pluederhausen/Penny-Markt/p-r75'}
 ];
+// Als Home-Bildschirm-App (iOS) Links in Safari statt im eingeblendeten Fenster öffnen
+window.openExtern=function(ev,url){
+  ev.preventDefault();
+  const iosStandalone=window.navigator.standalone===true;
+  if(iosStandalone) window.location.href='x-safari-'+url;
+  else window.open(url,'_blank','noopener');
+  return false;
+};
 function renderProspekte(){
   const g=document.getElementById('prospGrid'); if(!g||g.childElementCount)return;
   g.innerHTML=PROSPEKTE.map(p=>`<div class="prosp-wrap">
-    <a class="prosp-card" href="${p.url}" target="_blank" rel="noopener">
+    <a class="prosp-card" href="${p.url}" target="_blank" rel="noopener" onclick="return openExtern(event,'${p.url}')">
       <div class="prosp-logo" style="background:${p.color}">${esc(p.name.charAt(0))}</div>
       <div class="prosp-name">${esc(p.name)}</div>
       <div class="prosp-loc">${esc(p.loc)}</div>
-      ${p.alt?`<span class="prosp-alt" onclick="event.preventDefault();event.stopPropagation();window.open('${p.alt}','_blank','noopener')">kaufDA ↗</span>`:''}
+      ${p.alt?`<span class="prosp-alt" onclick="event.stopPropagation();return openExtern(event,'${p.alt}')">kaufDA ↗</span>`:''}
     </a></div>`).join('');
 }
 
